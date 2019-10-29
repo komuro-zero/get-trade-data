@@ -11,6 +11,7 @@ from datetime import datetime, timezone, timedelta
 import bitmex
 import csv
 from time import sleep
+import os
 
 class liquid_BTCJPY():
         
@@ -41,6 +42,7 @@ class liquid_BTCJPY():
             for i in range(len(price)):
                 all_csv.append([time[i],price[i]])
             timestamp = liquid_executions[-1]["created_at"]
+            os.makedirs("./csv_files/", exist_ok=True)
             with open(f"./csv_files/liquid_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
                 writer = csv.writer(f, lineterminator = "\n")
                 writer.writerows(all_csv)

@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import bitmex
 import csv
 from pytz import timezone
+import os
 
 class bitmex_BTCUSD():
     def to_japan_time(self,input_time):
@@ -55,6 +56,7 @@ class bitmex_BTCUSD():
             time.sleep(2)
             count += 1
             start_time = bitmex_execution[0][-1]["timestamp"]
+            os.makedirs("./csv_files/", exist_ok=True)
             with open(f"./csv_files/bitmex_BTCUSD_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
                 writer = csv.writer(f,lineterminator = "\n")
                 writer.writerows(csv_data)

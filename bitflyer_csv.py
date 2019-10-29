@@ -10,6 +10,8 @@ from quoine.client import Quoinex
 from datetime import datetime, timezone, timedelta
 import bitmex
 import csv
+import os
+
 
 class bitflyer_BTCJPY():
     def convert_time(self,time):
@@ -52,6 +54,7 @@ class bitflyer_BTCJPY():
             if yesterday > last_day:
                 flag = False
             else:
+                os.makedirs("./csv_files/", exist_ok=True)
                 with open(f"./csv_files/bitflyer_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
                     writer = csv.writer(f,lineterminator='\n')
                     for data in csv_data:

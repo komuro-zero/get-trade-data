@@ -5,6 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
+import os
 
 
 class parse():
@@ -99,6 +100,7 @@ class parse():
                 # legend and title
                 ax.legend(loc='best')
                 ax.set_title(f'bitflyer liquid JPY {now}')
+                os.makedirs("./graphs/", exist_ok=True)
 
                 # save as png
                 date = str(start_time)[:4]+str(start_time)[5:7]+str(start_time)[8:10]
@@ -163,7 +165,7 @@ class parse():
                 # legend and title
                 ax.legend(loc='best')
                 ax.set_title(f'bitmex liquid USD {now}')
-
+                os.makedirs("./graphs/", exist_ok=True)
                 # save as png
                 path2 = f'./graphs/bmx_lqd_{date}_{graph_counter}.png'
                 plt.savefig(path2)
