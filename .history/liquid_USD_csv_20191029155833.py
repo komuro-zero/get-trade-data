@@ -12,7 +12,7 @@ import bitmex
 import csv
 from time import sleep
 
-class liquid_BTCJPY():
+class liquid_BTCUSD():
         
     def liquid_quantify_executions(self,liquid_executions):
         liquid_price = []
@@ -27,12 +27,12 @@ class liquid_BTCJPY():
         return liquid_price, liquid_time
 
     def run(self,now,yesterday):
-        product_id = 5
+        product_id = 1
         limit = 1000
         quoine = Quoinex("","")
         timestamp = yesterday.timestamp()
-        now_lqd = now.timestamp()
         flag = True
+        now_lqd = now.timestamp()
 
         while flag:
             all_csv = []
@@ -41,7 +41,7 @@ class liquid_BTCJPY():
             for i in range(len(price)):
                 all_csv.append([time[i],price[i]])
             timestamp = liquid_executions[-1]["created_at"]
-            with open(f"./csv_files/liquid_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
+            with open(f"./liquid_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
                 writer = csv.writer(f, lineterminator = "\n")
                 writer.writerows(all_csv)
             if now_lqd < timestamp:

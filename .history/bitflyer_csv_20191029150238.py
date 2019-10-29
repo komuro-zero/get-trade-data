@@ -56,7 +56,8 @@ class bitflyer_BTCJPY():
                     writer = csv.writer(f,lineterminator='\n')
                     for data in csv_data:
                         writer.writerow(data)
-            time.sleep(5)
+                    
+            time.sleep(2)
             count +=1
 
 if __name__ == "__main__":

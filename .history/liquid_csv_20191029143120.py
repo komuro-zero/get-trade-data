@@ -14,7 +14,7 @@ from time import sleep
 
 class liquid_BTCJPY():
         
-    def liquid_quantify_executions(self,liquid_executions):
+    def liquid_quantify_executions(liquid_executions):
         liquid_price = []
         liquid_time = []
         last_time = datetime.fromtimestamp(liquid_executions[0]["created_at"]).strftime('%Y-%m-%d %H:%M:%S')
@@ -25,25 +25,28 @@ class liquid_BTCJPY():
                 liquid_time.append(this_time.strftime('%Y-%m-%d %H:%M:%S'))
                 last_time = this_time
         return liquid_price, liquid_time
-
-    def run(self,now,yesterday):
+    def run(now,yesterday):
         product_id = 5
         limit = 1000
         quoine = Quoinex("","")
-        timestamp = yesterday.timestamp()
-        now_lqd = now.timestamp()
         flag = True
+        count = 0
+        timestamp = yesterday
 
         while flag:
             all_csv = []
+            all_time = []
             liquid_executions = quoine.get_executions_since_time(product_id= product_id ,timestamp = timestamp,limit = limit)
-            price, time = self.liquid_quantify_executions(liquid_executions)
+            price, time = liquid_quantify_executions(liquid_executions)
+            now = liquid_executions[0]["created_at"]
+            print(" ",datetime.fromtimestamp(liquid_executions[0]["created_at"]),"\n",datetime.fromtimestamp(liquid_executions[-1]["created_at"]),"\n","======================================")
             for i in range(len(price)):
                 all_csv.append([time[i],price[i]])
             timestamp = liquid_executions[-1]["created_at"]
-            with open(f"./csv_files/liquid_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
+            count += 1
+            with open("./liquid_BTCUSD.csv","a") as f:
                 writer = csv.writer(f, lineterminator = "\n")
                 writer.writerows(all_csv)
-            if now_lqd < timestamp:
+            if end_date < timestamp:
                 flag = False
             sleep(2)

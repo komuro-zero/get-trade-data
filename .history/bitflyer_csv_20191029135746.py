@@ -12,43 +12,48 @@ import bitmex
 import csv
 
 class bitflyer_BTCJPY():
-    def convert_time(self,time):
+    
+    #yesterday = datetime.today() - timedelta(days=1)
+    def convert_time(time):
         new_time = time[:10]+ " " + time[11:]
         altered_time = datetime.strptime(new_time[:19],'%Y-%m-%d %H:%M:%S') + timedelta(hours = 9)
         return altered_time
 
-    def bitflyer_quantify_executions(self,executions):
+    def bitflyer_quantify_executions(executions):
         price = []
         date = []
         for execution in executions:
-            this_time = self.convert_time(execution["exec_date"])
+            this_time = convert_time(execution["exec_date"])
             price.append(execution["price"])
             date.append(this_time)
         return price, date
-
+    #bitflyer
     def run(self,now,yesterday):
         bitflyer_api = pybitflyer.API()
         product_code = "BTC_JPY"
-        yesterday = yesterday.replace(tzinfo=None)
 
         #first get the execution id for the most recent transaction made
         price = []
+        all_price = []
         date = []
+        all_date = []
         count =0
         #based on the timestamp, get the transaction for last 500 transactions. continue to do so with the last transaction id for each iteration until you reach the next day.
 
         flag = True
         while flag:
             if count == 0:
-                executions = bitflyer_api.executions(product_code = product_code, count = 500)
+                executions = bitflyer_api.executions(product_code = product_code, count = 1000)
             else:
                 executions = bitflyer_api.executions(product_code = product_code,before = before_id, count = 500)
+            print(executions)
             before_id = executions[-1]["id"]
-            price, date = self.bitflyer_quantify_executions(executions)
+            price, date = bitflyer_quantify_executions(executions)
             csv_data = []
             for i in range(len(price)):
                 csv_data.append([date[i],price[i]])
             last_day = date[0]
+            print(price[0])
             if yesterday > last_day:
                 flag = False
             else:
@@ -56,11 +61,8 @@ class bitflyer_BTCJPY():
                     writer = csv.writer(f,lineterminator='\n')
                     for data in csv_data:
                         writer.writerow(data)
-            time.sleep(5)
+                    
+            time.sleep(1)
             count +=1
 
 if __name__ == "__main__":
-    run = bitflyer_BTCJPY()
-    now = datetime.now()
-    yesterday = now -timedelta(days = 1)
-    run.run(now,yesterday)

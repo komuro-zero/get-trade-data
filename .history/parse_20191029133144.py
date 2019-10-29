@@ -78,6 +78,8 @@ class parse():
                 graph_axis_time.append(now)
             now = now + timedelta(seconds = 1)
             counter += 1
+            if counter % 1000 == 0:
+                print("iteration:",counter)
             with open(f"./csv_files/all_trade_data_JPY_{str(start_time)[:4]+str(start_time)[5:7]+str(start_time)[8:10]}.csv","a") as f:
                 writer = csv.writer(f,lineterminator="\n")
                 writer.writerows(all_trade_exec)

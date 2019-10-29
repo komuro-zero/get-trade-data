@@ -29,7 +29,6 @@ class bitflyer_BTCJPY():
     def run(self,now,yesterday):
         bitflyer_api = pybitflyer.API()
         product_code = "BTC_JPY"
-        yesterday = yesterday.replace(tzinfo=None)
 
         #first get the execution id for the most recent transaction made
         price = []
@@ -40,11 +39,11 @@ class bitflyer_BTCJPY():
         flag = True
         while flag:
             if count == 0:
-                executions = bitflyer_api.executions(product_code = product_code, count = 500)
+                executions = self.bitflyer_api.executions(product_code = product_code, count = 1001)
             else:
-                executions = bitflyer_api.executions(product_code = product_code,before = before_id, count = 500)
+                executions = self.bitflyer_api.executions(product_code = product_code,before = before_id, count = 500)
             before_id = executions[-1]["id"]
-            price, date = self.bitflyer_quantify_executions(executions)
+            price, date = bitflyer_quantify_executions(executions)
             csv_data = []
             for i in range(len(price)):
                 csv_data.append([date[i],price[i]])
@@ -56,7 +55,8 @@ class bitflyer_BTCJPY():
                     writer = csv.writer(f,lineterminator='\n')
                     for data in csv_data:
                         writer.writerow(data)
-            time.sleep(5)
+                    
+            time.sleep(1)
             count +=1
 
 if __name__ == "__main__":
