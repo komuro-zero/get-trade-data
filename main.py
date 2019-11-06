@@ -6,19 +6,25 @@ from parse import parse
 from datetime import datetime,timedelta
 from pytz import timezone
 
+class job():
+    def run(self,days_before):
+        now = datetime.now(timezone("Asia/Tokyo"))
+        now = now.replace(microsecond=0)
+        start_date = now-timedelta(days = days_before)
+
+        btf = bitflyer_BTCJPY()
+        btf.run(now,start_date)
+        bmx = bitmex_BTCUSD()
+        bmx.run(now,start_date)
+        lqdjpy = liquid_BTCJPY()
+        lqdjpy.run(now,start_date)
+        lqdusd = liquid_BTCUSD()
+        lqdusd.run(now,start_date)
+        parser = parse()
+        parser.run(days_before)
+
 
 if __name__ == "__main__":
-    now = datetime.now(timezone("Asia/Tokyo"))
-    now = now.replace(microsecond=0)
-    yesterday = now-timedelta(days = 1)
-
-    btf = bitflyer_BTCJPY()
-    btf.run(now,yesterday)
-    bmx = bitmex_BTCUSD()
-    bmx.run(now,yesterday)
-    lqdjpy = liquid_BTCJPY()
-    lqdjpy.run(now,yesterday)
-    lqdusd = liquid_BTCUSD()
-    lqdusd.run(now,yesterday)
-    parse = parse()
-    parse.run()
+    days_before = 1
+    run = job()
+    run.run(days_before)
