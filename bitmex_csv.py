@@ -44,15 +44,13 @@ class bitmex_BTCUSD():
                     this_id = execution['trdMatchID']
                     if this_id != last_id:
                         csv_data.append([self.to_japan_time(execution['timestamp']),execution['price'],execution['size']])
-                        if execution['size'] != execution['foreignNotional']:
-                            print(execution['size'],execution['foreignNotional'])  
                     last_id = this_id
             else:
                 flag = False
             time.sleep(2)
             start_time = bitmex_execution[0][-1]["timestamp"]
             os.makedirs("./csv_files/", exist_ok=True)
-            with open(f"./csv_files/bitmex_BTCUSD_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
+            with open(f"./csv_files/bitmex_BTCUSD_{str(yesterday)[:4]+str(yesterday)[5:7]+str(yesterday)[8:10]}.csv","a") as f:
                 writer = csv.writer(f,lineterminator = "\n")
                 writer.writerows(csv_data)
             csv_data= []

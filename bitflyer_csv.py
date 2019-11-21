@@ -28,10 +28,11 @@ class bitflyer_BTCJPY():
             date.append(this_time)
         return price, date
 
-    def run(self,now,yesterday):
+    def run(self,now,yesterday,before_id = None,bitflyer_sleep_time):
         bitflyer_api = pybitflyer.API()
         product_code = "BTC_JPY"
         yesterday = yesterday.replace(tzinfo=None)
+        now = now.replace(tzinfo=None)
 
         #first get the execution id for the most recent transaction made
         price = []
@@ -41,25 +42,27 @@ class bitflyer_BTCJPY():
 
         flag = True
         while flag:
-            if count == 0:
+            if not before_id:
                 executions = bitflyer_api.executions(product_code = product_code, count = 500)
             else:
                 executions = bitflyer_api.executions(product_code = product_code,before = before_id, count = 500)
             before_id = executions[-1]["id"]
             price, date = self.bitflyer_quantify_executions(executions)
-            csv_data = []
-            for i in range(len(price)):
-                csv_data.append([date[i],price[i]])
-            last_day = date[0]
-            if yesterday > last_day:
-                flag = False
-            else:
-                os.makedirs("./csv_files/", exist_ok=True)
-                with open(f"./csv_files/bitflyer_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
-                    writer = csv.writer(f,lineterminator='\n')
-                    for data in csv_data:
-                        writer.writerow(data)
-            time.sleep(5)
+            if date[0] < now:
+                csv_data = []
+                for i in range(len(price)):
+                    csv_data.append([date[i],price[i]])
+                last_day = date[0]
+                if yesterday > last_day:
+                    flag = False
+                else:
+                    os.makedirs("./csv_files/", exist_ok=True)
+                    with open(f"./csv_files/bitflyer_BTCJPY_{str(yesterday)[:4]+str(yesterday)[5:7]+str(yesterday)[8:10]}.csv","a") as f:
+                        writer = csv.writer(f,lineterminator='\n')
+                        for data in csv_data:
+                            writer.writerow(data)
+                    print(f"bitflyer, date: {date[0]} id: {before_id}")
+            time.sleep(bitflyer_sleep_time)
             count +=1
 
 if __name__ == "__main__":

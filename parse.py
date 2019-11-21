@@ -9,9 +9,9 @@ import os
 
 
 class parse():
-    def run(self,days_before):
-        start_time = datetime.now().replace(microsecond=0)
-        file_date = str(start_time)[:4]+str(start_time)[5:7]+str(start_time)[8:10]
+    def run(self,days_before,end_time):
+        start_time = end_time
+        file_date = str(end_time-timedelta(days = 1))[:4]+str(end_time-timedelta(days = 1))[5:7]+str(end_time-timedelta(days = 1))[8:10]
         bitflyer = []
         temp_bitflyer = []
         with open(f"./csv_files/bitflyer_BTCJPY_{file_date}.csv","r") as f:
@@ -34,11 +34,11 @@ class parse():
             for row in reader:
                 liquid.append(row)
 
-        bitmex = []
-        with open(f"./csv_files/bitmex_BTCUSD_{file_date}.csv","r") as f:
-            reader = csv.reader(f, lineterminator = "\n")
-            for row in reader:
-                bitmex.append(row)
+        # bitmex = []
+        # with open(f"./csv_files/bitmex_BTCUSD_{file_date}.csv","r") as f:
+        #     reader = csv.reader(f, lineterminator = "\n")
+        #     for row in reader:
+        #         bitmex.append(row)
 
 
         def close_price_find(execution,correct_time):
@@ -46,11 +46,11 @@ class parse():
             for one_exec in execution:
                 this_time = one_exec[0][:19]
                 this_datetime = datetime.strptime(this_time,'%Y-%m-%d %H:%M:%S')
-                if this_datetime < correct_time:
+                if this_datetime <= correct_time:
                     return_exec = one_exec[1]
                     count += 1
                 else:
-                    break 
+                    break
             del execution[0:count-1] 
             return return_exec,execution
 
@@ -66,7 +66,7 @@ class parse():
             return one_volume
 
 
-        now = start_time - timedelta(days = days_before)
+        now = start_time-timedelta(days = days_before)
         flag = True
         graph_btf_jpy = []
         graph_lqd_jpy = []
@@ -76,8 +76,8 @@ class parse():
         counter = 0
         graph_counter = 1
         while flag:
-            bitflyer_one_exec,bitflyer = close_price_find(bitflyer,now)
-            liquid_one_exec,liquid = close_price_find(liquid,now)
+            bitflyer_one_exec,bitflyer = close_price_find(bitflyer,now.replace(tzinfo=None))
+            liquid_one_exec,liquid = close_price_find(liquid,now.replace(tzinfo=None))
             all_trade_exec.append([now,bitflyer_one_exec,liquid_one_exec])
             if counter == 0:
                 graph_btf_jpy = [float(bitflyer_one_exec)]
@@ -92,7 +92,7 @@ class parse():
             with open(f"./csv_files/all_trade_data_JPY_{str(start_time)[:4]+str(start_time)[5:7]+str(start_time)[8:10]}.csv","a") as f:
                 writer = csv.writer(f,lineterminator="\n")
                 writer.writerows(all_trade_exec)
-            if graph_time < now:
+            """if graph_time < now:
                 fig = plt.figure()
                 ax = fig.add_subplot(1, 1, 1)
 
@@ -121,7 +121,7 @@ class parse():
                 graph_btf_jpy = [float(bitflyer_one_exec)]
                 graph_lqd_jpy = [float(liquid_one_exec)]
                 graph_counter += 1
-                plt.close()
+                plt.close()"""
             all_trade_exec = []
             if start_time < now:
                 flag = False
@@ -137,10 +137,10 @@ class parse():
         counter = 0
         graph_counter = 1
         while flag:
-            bitmex_one_exec,bitmex = close_price_find(bitmex,now)
+            bitmex_one_exec,bitmex = close_price_find(bitmex,now.replace(tzinfo=None))
             bitmex_one_exec = float(bitmex_one_exec)
             bitmex_one_volume = graph_volume_second(bitmex,now.replace(tzinfo=None))
-            liquid_USD_one_exec,liquid_USD = close_price_find(liquid_USD,now)
+            liquid_USD_one_exec,liquid_USD = close_price_find(liquid_USD,now.replace(tzinfo=None))
             all_trade_exec.append([now,bitmex_one_exec,liquid_USD_one_exec])
             if counter == 0:
                 graph_bmx_usd = [float(bitmex_one_exec)]
@@ -158,7 +158,7 @@ class parse():
                 with open(f"./csv_files/all_trade_data_USD_{str(start_time)[:4]+str(start_time)[5:7]+str(start_time)[8:10]}.csv","a") as f:
                     writer = csv.writer(f,lineterminator="\n")
                     writer.writerows(all_trade_exec)
-            if graph_time < now:
+            """if graph_time < now:
                 fig = plt.figure()
                 ax = fig.add_subplot(2, 1, 1)
 
@@ -188,7 +188,7 @@ class parse():
                 graph_axis_time = [now]
                 graph_time = now + timedelta(hours = 2)
                 graph_counter += 1
-                plt.close()
+                plt.close()"""
             all_trade_exec = []
             if start_time < now:
                 flag = False

@@ -3,12 +3,10 @@ from __future__ import unicode_literals, print_function
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import pybitflyer
 import time
 import pytz 
 from quoine.client import Quoinex
 from datetime import datetime, timezone, timedelta
-import bitmex
 import csv
 from time import sleep
 import os
@@ -27,11 +25,14 @@ class liquid_BTCJPY():
                 last_time = this_time
         return liquid_price, liquid_time
 
-    def run(self,now,yesterday):
+    def run(self,now,yesterday,lqd_JPY_time= None,liquid_sleep_time):
         product_id = 5
         limit = 1000
         quoine = Quoinex("","")
-        timestamp = yesterday.timestamp()
+        if lqd_JPY_time:
+            timestamp = lqd_JPY_time.timestamp()
+        else:
+            timestamp = yesterday.timestamp()
         now_lqd = now.timestamp()
         flag = True
 
@@ -43,9 +44,10 @@ class liquid_BTCJPY():
                 all_csv.append([time[i],price[i]])
             timestamp = liquid_executions[-1]["created_at"]
             os.makedirs("./csv_files/", exist_ok=True)
-            with open(f"./csv_files/liquid_BTCJPY_{str(now)[:4]+str(now)[5:7]+str(now)[8:10]}.csv","a") as f:
+            with open(f"./csv_files/liquid_BTCJPY_{str(yesterday)[:4]+str(yesterday)[5:7]+str(yesterday)[8:10]}.csv","a") as f:
                 writer = csv.writer(f, lineterminator = "\n")
                 writer.writerows(all_csv)
+            print(f"liquid JPY, date: {time[0]}")
             if now_lqd < timestamp:
                 flag = False
-            sleep(2)
+            sleep(liquid_sleep_time)
