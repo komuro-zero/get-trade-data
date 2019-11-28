@@ -28,7 +28,7 @@ class bitflyer_BTCJPY():
             date.append(this_time)
         return price, date
 
-    def run(self,now,yesterday,before_id = None,bitflyer_sleep_time):
+    def run(self,now,yesterday,bitflyer_sleep_time,before_id = None):
         bitflyer_api = pybitflyer.API()
         product_code = "BTC_JPY"
         yesterday = yesterday.replace(tzinfo=None)

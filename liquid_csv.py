@@ -25,7 +25,7 @@ class liquid_BTCJPY():
                 last_time = this_time
         return liquid_price, liquid_time
 
-    def run(self,now,yesterday,lqd_JPY_time= None,liquid_sleep_time):
+    def run(self,now,yesterday,liquid_sleep_time,lqd_JPY_time= None):
         product_id = 5
         limit = 1000
         quoine = Quoinex("","")

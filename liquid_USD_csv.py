@@ -25,7 +25,7 @@ class liquid_BTCUSD():
                 last_time = this_time
         return liquid_price, liquid_time
 
-    def run(self,now,yesterday,lqd_USD_time = None,liquid_sleep_time):
+    def run(self,now,yesterday,liquid_sleep_time,lqd_USD_time = None):
         product_id = 1
         limit = 1000
         quoine = Quoinex("","")

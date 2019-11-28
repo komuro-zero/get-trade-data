@@ -63,7 +63,7 @@ class output_graph():
 
             ax1.plot(tri_prox["open_bf"],color = "red",label = "bitflyer")
             ax1.plot(tri_prox["open"],color="black", label = "liquid")
-            # ax2.plot(tri_prox["open_mex"], label = "bitmex")
+            ax2.plot(tri_prox["open_mex"], label = "bitmex")
             ax1.legend()
             ax2.legend(loc = 3)
             os.makedirs(f"./graphs/{file_date}", exist_ok=True)

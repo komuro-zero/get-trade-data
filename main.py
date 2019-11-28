@@ -12,20 +12,20 @@ import traceback
 
 class job():
     def run(self,days_before,bf_id,lqd_JPY_time,lqd_USD_time,get_bf,get_lqd_JPY,get_lqd_USD,bitflyer_sleep_time,liquid_sleep_time):
-        now = datetime.now(timezone("Asia/Tokyo")) -timedelta(days = 1)
+        now = datetime.now(timezone("Asia/Tokyo")) -timedelta(days = 2)
         now = now.replace(hour=9,minute=0,second=0,microsecond=0)
         yesterday = now-timedelta(days = 1)
         start_date = now-timedelta(days = days_before)
 
         if get_bf:
             btf = bitflyer_BTCJPY()
-            btf.run(now,start_date,bf_id,bitflyer_sleep_time)
+            btf.run(now,start_date,bitflyer_sleep_time,bf_id)
         if get_lqd_JPY:
             lqdjpy = liquid_BTCJPY()
-            lqdjpy.run(now,start_date,lqd_JPY_time,liquid_sleep_time)
+            lqdjpy.run(now,start_date,liquid_sleep_time,lqd_JPY_time)
         if get_lqd_USD:
             lqdusd = liquid_BTCUSD()
-            lqdusd.run(now,start_date,lqd_USD_time,liquid_sleep_time)
+            lqdusd.run(now,start_date,liquid_sleep_time,lqd_USD_time)
         graph = output_graph()
         graph.graph(yesterday)
         drive_upload = upload()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # lqd_JPY_time = datetime.strptime('2019-00-00 00:00:00','%Y-%m-%d %H:%M:%S')
     lqd_USD_time = None
     # lqd_USD_time = datetime.strptime('2019-00-00 00:00:00','%Y-%m-%d %H:%M:%S')
-    bitflyer_sleep_time = 1
+    bitflyer_sleep_time = 2
     liquid_sleep_time = 2
 
     job = job()
