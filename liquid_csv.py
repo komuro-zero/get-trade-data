@@ -51,3 +51,12 @@ class liquid_BTCJPY():
             if now_lqd < timestamp:
                 flag = False
             sleep(liquid_sleep_time)
+
+if __name__ == "__main__":
+    now_time = datetime.now()
+    now_time = now_time.replace(hour=9,minute=0,second=0,microsecond=0)
+    now_time = now_time -timedelta(days = 4)
+    yesterday = now_time -timedelta(days = 1)
+    sleep_time = 1.5
+    go = liquid_BTCJPY()
+    go.run(now_time,yesterday,sleep_time)

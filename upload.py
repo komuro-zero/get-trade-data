@@ -16,9 +16,14 @@ class upload:
         child_folder.Upload()
         print()
         for i in range(24):
-            f = drive.CreateFile({'title': f'all_graph_{date}_{i+1}.png',
+            f = drive.CreateFile({'title': f'./{file_date}/BTCJPY_{file_date}_{i+1}.png',
                                 'mimeType': 'image/png',
                                 'parents': [{'kind': 'drive#fileLink', 'id':f"{child_folder['id']}"}]})
-            f.SetContentFile(f'./graphs/{file_date}/all_graph_{date}_{i+1}.png')
+            f.SetContentFile(f'./graphs/BTCJPY_{file_date}_{i+1}.png')
             f.Upload()
-    
+            f = drive.CreateFile({'title': f'./{file_date}/BTCUSD_{file_date}_{i+1}.png',
+                                'mimeType': 'image/png',
+                                'parents': [{'kind': 'drive#fileLink', 'id':f"{child_folder['id']}"}]})
+            f.SetContentFile(f'./graphs/BTCUSD_{file_date}_{i+1}.png')
+            f.Upload()
+
