@@ -14,23 +14,38 @@ import traceback
 
 class job():
     def run(self,days_before,bf_id,lqd_JPY_time,lqd_USD_time,get_bf,get_lqd_JPY,get_lqd_USD,bitflyer_sleep_time,liquid_sleep_time):
-        now = datetime.now(timezone("Asia/Tokyo")) #-timedelta(days = 1)
+        now = datetime.now(timezone("Asia/Tokyo")) -timedelta(days = 1)
         now = now.replace(hour=9,minute=0,second=0,microsecond=0)
         yesterday = now-timedelta(days = 1)
         start_date = now-timedelta(days = days_before)
 
         if get_bf:
             btf = bitflyer_BTCJPY()
-            btf.run(now,start_date,bitflyer_sleep_time,"BTC_JPY",bf_id)
-            btf.run(now,start_date,bitflyer_sleep_time,"FX_BTC_JPY",bf_id)
+            try:
+                btf.run(now,start_date,bitflyer_sleep_time,"BTC_JPY",bf_id)
+            except Exception as e:
+                print("bitflyer btc_jpy",e)
+            try:
+                btf.run(now,start_date,bitflyer_sleep_time,"FX_BTC_JPY",bf_id)
+            except Exception as e:
+                print("bitflyer fx_btc_jpy",e)
         if get_lqd_JPY:
             lqdjpy = liquid_BTCJPY()
-            lqdjpy.run(now,start_date,liquid_sleep_time,lqd_JPY_time)
+            try:
+                lqdjpy.run(now,start_date,liquid_sleep_time,lqd_JPY_time)
+            except Exception as e:
+                print("liquid btc_jpy",e)
         if get_lqd_USD:
             lqdusd = liquid_BTCUSD()
-            lqdusd.run(now,start_date,liquid_sleep_time,lqd_USD_time)
+            try:
+                lqdusd.run(now,start_date,liquid_sleep_time,lqd_USD_time)
+            except Exception as e:
+                print("liquid btc_usd",e)
         get_binance_USD = binance_BTCUSD()
-        get_binance_USD.get_binance_transaction(now,start_date)
+        try:
+            get_binance_USD.get_binance_transaction(now,start_date)
+        except Exception as e:
+            print("binance btc_usd",e)
         graph_jpy = JPY_csv_to_graph()
         graph_jpy.run(yesterday)
         graph_usd = USD_csv_to_graph()
